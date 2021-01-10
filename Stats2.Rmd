@@ -1,0 +1,68 @@
+---
+title: "Statistical Inference Course Project part 2"
+author: "Louis"
+date: "9/20/2020"
+output: pdf_document
+---
+# Coursera Statistical Inference Course Project
+```{r}
+library(ggplot2)
+library(dplyr)
+library(knitr)
+```
+
+# Part 2 : Sorting out the Tooth Growth Data
+```{r}
+# Load the Data
+data <- read.csv("ToothGrowth.csv")
+# Renaming the columns for more easier understanding
+data <- rename( data,Number = X, Length = len, Supplement = supp, Dose = dose)
+# Due to there being an select type of Doses, change it to a factor
+data$Dose <- as.factor(data$Dose)
+```
+
+# Plotting the data to make more sense of it
+```{r}
+theplot1 <- ggplot(data = data, aes(x = Dose, y = Length))
+theplot1 + geom_boxplot(aes(fill = Dose)) + 
+        labs(title = "Different doses based on tooth length")
+
+
+theplot2 <- ggplot(data = data, aes(x = Supplement, y = Length))
+theplot2 + geom_boxplot(aes(fill = Supplement)) + 
+        labs(title = "Different tooth length based on supplement")
+
+theplot3 <- ggplot(data = data, aes(Dose, Length))
+theplot3 <- theplot3 + geom_boxplot(aes(fill = Supplement)) + 
+        facet_grid(~ Supplement)
+theplot3 + labs(title = "Different Doses based type of Supplement")
+
+```
+
+## P-values of the data: 
+## If p-value is bigger than level of significance(0.05) then there is a correlation
+## between the data.
+```{r}
+# Comparing Length and Supplement
+t.test(Length~Supplement, data=data)
+# There is no correlation with different supplements and tooth length 
+
+# Comparing length with 0.5mg and 2mg doses
+t.test(data$Length[data$Dose == 0.5],data$Length[data$Dose == 2], data=data)
+# There is a correlation between tooth length and dose(0.5mg and 2mg)
+
+# Comparing length with 0.5mg and 1mg doses
+t.test(data$Length[data$Dose == 0.5],data$Length[data$Dose == 1], data=data)
+# There is a correlation between tooth length and dose(0.5mg and 1mg)
+
+# Comparing length with 1mg and 2mg doses
+t.test(data$Length[data$Dose == 1],data$Length[data$Dose == 2], data=data)
+# There is a correlation between tooth length and dose(1mg and 2mg)
+```
+
+# Conclusion: 
+## There is a direct correlation between the dose and the tooth length.
+## We can assume that with an larger tooth length, the dose will increase as well.
+## There is no correlation with the type of supplement and tooth length.
+
+ 
